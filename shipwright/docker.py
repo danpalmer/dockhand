@@ -1,19 +1,16 @@
 from __future__ import absolute_import
 from shipwright import fn
-from shipwright.fn import _1, curry, compose, flatten
+from shipwright.fn import curry, compose, flatten
 
 
-@fn.composed(_1, fn.split(':'))
 def key_from_image_name(image_name):
     """
     >>> key_from_image_name('shipwright/blah:1234')
     '1234'
     """
+    return image_name.split(':', 1)[1]
 
 
-# DockerTag = str
-# {} -> [DockerTag]
-@fn.composed(fn.map(key_from_image_name), fn.getitem('RepoTags'))
 def key_from_image_info(image_info_dict):
     """
     >>> key_from_image_info({
@@ -23,6 +20,7 @@ def key_from_image_info(image_info_dict):
     ... })
     ['6e29823388f8', 'test']
     """
+    return [key_from_image_name(t) for t in image_info_dict['RepoTags']]
 
 
 @curry

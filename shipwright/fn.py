@@ -71,37 +71,6 @@ def compose(*fns):
     return compose_
 
 
-def composed(*fns):
-    """
-    Decorater to compose functions and write a doc test at the same time.
-    The function being decorated exists simply to document the composition.
-
-    For example if we have these 3 functions
-
-    >>> def first(a):
-    ...   return a + 2
-
-    >>> def second(b):
-    ...   return b + 10
-
-    >>> def third(c):
-    ...   return c - 5
-
-
-    We can compose them with decorator, note the body of bogus_func
-    is never called.
-
-    >>> @composed(first, second, third)
-    ... def bogus_func(int):
-    ...    "... insert a doc test here ..."
-
-
-    """
-    def dec(f):
-        return wraps(f)(compose(*fns))
-    return dec
-
-
 def apply(fn):
     @wraps(fn)
     def _(arr):
