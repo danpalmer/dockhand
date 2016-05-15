@@ -192,8 +192,8 @@ def expand(branch, tree):
     return [
         [
             d,
-            d.replace(last_built_ref=branch),
-            d.replace(last_built_ref='latest'),
+            d._replace(last_built_ref=branch),
+            d._replace(last_built_ref='latest'),
         ]
         for d in dependencies.brood(tree)
     ]
