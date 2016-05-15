@@ -161,7 +161,8 @@ def run(repo, arguments, client_cfg, environ):
     client = docker.Client(version='1.18', **client_cfg)
     commands = ['build', 'push', 'purge']
     # {'publish': false, 'purge': true, ...} = 'purge'
-    command_name = [c for c in commands if arguments[c]][0] or "build"
+    command_names = [c for c in commands if arguments[c]]
+    command_name = command_names[0] if command_names else "build"
 
     command = getattr(Shipwright(config, repo, client), command_name)
 
