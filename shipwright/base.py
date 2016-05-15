@@ -5,7 +5,6 @@ from collections import namedtuple
 from . import build
 from . import push
 from . import purge
-from . import fn
 from . import commits
 from . import docker
 
@@ -190,14 +189,14 @@ def expand(branch, tree):
     ]
 
     """
-    return fn.flat_map(
-        fn.juxt(
-            fn.identity,
-            fn.replace(last_built_ref=branch),
-            fn.replace(last_built_ref="latest")
-        ),
-        dependencies.brood(tree)
-    )
+    return [
+        [
+            d,
+            d.replace(last_built_ref=branch),
+            d.replace(last_built_ref='latest'),
+        ]
+        for d in dependencies.brood(tree)
+    ]
 
 
 def unit(tree):
