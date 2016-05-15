@@ -55,6 +55,9 @@ def build(client, git_rev, container):
     # Docker correctly, and so the build API yields *chunks*, rather than the
     # valid JSON objects that it is documented as yielding.
     # We therefore maintain a buffer and read our own valid JSON out of that.
+    # This can probably be replaced this issue is fixed - ideally we'd use the
+    # 'decode' option on client.build to receive already parsed JSON objects.
+    #   https://github.com/docker/docker-py/issues/1059
     buffer = ''
 
     def process_event_(buffer, data):
