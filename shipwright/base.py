@@ -147,14 +147,13 @@ class Shipwright(object):
 
         """
         branch = self.source_control.active_branch.name
-        tree = dependencies.eval(specifiers, self.targets())
 
-        push_tree = compose(
-            push.do_push(self.docker_client),
-            # [Target] -> [[ImageName, Tag]]
-            fn.map(fn.juxt(fn.getattr('name'), fn.getattr('last_built_ref'))),
-            expand(branch)
-        )
+        def push_tree(tree):
+            flat_tree = expand(branch, tree)
+            names_and_tags = [(x.name, x.last_built_ref) for x in flat_tree]
+            return push.do_push(self.docker_client, names_and_tags)
+
+        tree = dependencies.eval(specifiers, self.targets())
 
         if build:
             return bind(self.build_tree, push_tree, tree)
