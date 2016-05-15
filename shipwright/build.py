@@ -51,9 +51,24 @@ def build(client, git_rev, container):
         'rev': git_rev
     }
 
-    def process_event_(evt):
-        evt_parsed = json_loads(evt)
-        return merge(merge_config)(evt_parsed)
+    # docker-py has an issue where it doesn't handle chunked responses from
+    # Docker correctly, and so the build API yields *chunks*, rather than the
+    # valid JSON objects that it is documented as yielding.
+    # We therefore maintain a buffer and read our own valid JSON out of that.
+    buffer = ''
+
+    def process_event_(buffer, data):
+        buffer += data
+        for line in buffer.split('\r\n'):
+            if not line:
+                continue
+
+            try:
+                event = json_loads(line)
+            except ValueError:
+                continue
+
+            yield merge(merge_config)(event)
 
     build_evts = client.build(
         fileobj=mkcontext(git_rev, container.path),
@@ -64,7 +79,11 @@ def build(client, git_rev, container):
         dockerfile=os.path.basename(container.path),
     )
 
-    return (process_event_(evt) for evt in build_evts)
+    return (
+        evt
+        for raw_evt in build_evts
+        for evt in process_event_(buffer, raw_evt)
+    )
 
 
 def success(line):
