@@ -58,11 +58,11 @@ def build(client, git_rev, container):
     # This can probably be replaced this issue is fixed - ideally we'd use the
     # 'decode' option on client.build to receive already parsed JSON objects.
     #   https://github.com/docker/docker-py/issues/1059
-    buffer = ''
+    buffer = b''
 
     def process_event_(buffer, data):
         buffer += data
-        for line in buffer.split('\r\n'):
+        for line in buffer.split(b'\r\n'):
             if not line:
                 continue
 
