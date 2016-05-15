@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from .fn import curry, maybe, identity
+from .fn import curry, maybe
 from . import compat
 
 
@@ -38,7 +38,7 @@ def max_commit(commit_map, commits):
                 compat.python2_sort_key(c_map),
                 compat.python2_sort_key(ident),
             )
-        return max(([identity(c), commit_map(c)] for c in commits), key=key)
+        return max(([c, commit_map(c)] for c in commits), key=key)
     else:
         return [None, -1]
 
