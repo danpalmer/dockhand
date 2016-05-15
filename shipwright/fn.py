@@ -71,13 +71,6 @@ def compose(*fns):
     return compose_
 
 
-def apply(fn):
-    @wraps(fn)
-    def _(arr):
-        return fn(*arr)
-    return _
-
-
 def juxt(*fns):
     """
     >>> juxt(len)("blah")
