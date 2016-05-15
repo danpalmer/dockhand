@@ -7,6 +7,8 @@ from .tar import mkcontext
 
 from .compat import json_loads
 
+RE_SUCCESS = re.compile(r'^Successfully built ([a-f0-9]+)\s*$')
+
 
 # (container->(str -> None))
 #   -> (container -> stream)
@@ -64,8 +66,6 @@ def build(client, git_rev, container):
 
     return (process_event_(evt) for evt in build_evts)
 
-
-RE_SUCCESS = re.compile(r'^Successfully built ([a-f0-9]+)\s*$')
 
 def success(line):
     """
