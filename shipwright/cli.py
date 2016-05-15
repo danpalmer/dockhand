@@ -180,26 +180,22 @@ def run(repo, arguments, client_cfg, environ):
     if command_name == 'push':
         args.append(not arguments.pop('--no-build'))
 
+    dump_file = None
     if arguments['--dump-file']:
         dump_file = open(arguments['--dump-file'], 'w')
-        writer = fn.compose(
-            switch,
-            fn.tap(streamout(dump_file))
-        )
-    else:
-        writer = switch
 
     for event in command(*args):
         show_fn = mk_show(event)
-        formatted_message = writer(event)
+        formatted_message = streamout(event, dump_file)
         if formatted_message is not None:
-            show_fn(writer(event))
+            show_fn(streamout(event, dump_file))
 
 
-@fn.curry
-def streamout(f, event):
-    f.write(json.dumps(event))
-    f.write('\n')
+def streamout(event, dump_file):
+    if dump_file:
+        dump_file.write(json.dumps(event))
+        dump_file.write('\n')
+    return switch(event)
 
 
 def exit(msg):
