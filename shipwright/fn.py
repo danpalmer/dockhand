@@ -93,16 +93,6 @@ def juxt(*fns):
 
 
 @curry
-def tap(fn, val):
-    fn(val)
-    return val
-
-show = tap(print)
-
-print_fun = print
-
-
-@curry
 def catch(fn, on_error, value):
     """
     Given a function and an error handler  returns a function
