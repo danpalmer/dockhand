@@ -23,8 +23,6 @@ except ImportError:
 from functools import partial, wraps, reduce as ft_reduce
 import inspect
 
-import re
-
 
 def curry(f):
     """
@@ -202,18 +200,6 @@ def startswith(s1, s2):
     return s2.startswith(s1)
 
 
-def search(pattern, string=None):
-    def search(string):
-        m = re.search(pattern, string)
-        if m:
-            return m.groups()
-
-    if string is None:
-        return search
-    else:
-        return search(string)
-
-
 # sequence funcs
 flatten = chain.from_iterable
 
@@ -234,10 +220,6 @@ def flat_map(f, arr):
     return flatten(fmap(f, arr))
 
 
-def const(val):
-    return lambda x: val
-
-
 # Dict functions
 @curry
 def getitem(key, hashmap):
@@ -254,10 +236,6 @@ def merge(d1, d2):
 # object functions
 
 
-def identity(obj):
-    return obj
-
-
 @curry
 def getattr(attr, obj):
     return __builtin__.getattr(obj, attr)
@@ -267,36 +245,3 @@ def getattr(attr, obj):
 def setattr(attr, value, obj):
     __builtin__.setattr(obj, attr, value)
     return obj
-
-
-# namedtuples
-def replace(**kw):
-    def _replace(nt):
-        return nt._replace(**kw)
-    return _replace
-
-
-@curry
-def debug(fn, value):
-    """
-    Pause the python interpreter prior to calling a funtion. Useful
-    during development to inspect composed functions.
-
-    Imagine you have some long chain of composed functions
-
-    composed_fun = compose(some, long, function, chain)
-
-    You can stick a debug in the middle of it to inspect the result
-    before and after the function to the left is called.
-
-    So in this case wrapping function with a debug alows us to
-    inspect the input and output of it prior to being passed
-    to the long function.
-
-    composed_fun = compose(some, long, debug(function), chain)
-
-    """
-    import pdb
-    pdb.set_trace()
-    ret = fn(value)
-    return ret
