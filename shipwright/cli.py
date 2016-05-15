@@ -112,7 +112,6 @@ from shipwright.version import version
 
 from shipwright.dependencies import dependents, exact, exclude, upto
 from shipwright.colors import rainbow
-from shipwright.fn import _0
 from shipwright import fn
 
 
@@ -162,10 +161,7 @@ def run(repo, arguments, client_cfg, environ):
     client = docker.Client(version='1.18', **client_cfg)
     commands = ['build', 'push', 'purge']
     # {'publish': false, 'purge': true, ...} = 'purge'
-    command_name = _0([
-        c for c in commands
-        if arguments[c]
-    ]) or "build"
+    command_name = [c for c in commands if arguments[c]][0] or "build"
 
     command = getattr(Shipwright(config, repo, client), command_name)
 
