@@ -234,61 +234,8 @@ def flat_map(f, arr):
     return flatten(fmap(f, arr))
 
 
-@curry
-def filter(fn, sequence):
-    return list(__builtin__.filter(fn, sequence))
-
-
-def empty(seq):
-    return len(seq) == 0
-
-
-def first(arr):
-    """
-    >>> first([1,2,3])
-    1
-    """
-    return arr[0]
-
-
-def last(arr):
-    """
-    >>> last([1,2,3])
-    3
-    """
-    return arr[-1]
-
-
-@curry
-def slice(start, stop, seq):
-    return seq[start:stop]
-
-
-@curry
-def get(index, arr):
-    """
-    Returns the item in the array at the given index or None.
-    """
-    if index > len(arr) - 1:
-        return None
-    else:
-        return arr[index]
-
-
 def const(val):
     return lambda x: val
-
-# Convienance getters
-_0 = get(0)
-_1 = get(1)
-_2 = get(2)
-_3 = get(3)
-_4 = get(4)
-_5 = get(5)
-_6 = get(6)
-_7 = get(7)
-_8 = get(8)
-_9 = get(9)
 
 
 # Dict functions
