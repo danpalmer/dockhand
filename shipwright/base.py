@@ -14,7 +14,7 @@ from . import dependencies
 from . import query
 
 from .container import containers as list_containers, container_name
-from .fn import curry, compose
+from .fn import curry
 
 
 class Shipwright(object):
@@ -46,13 +46,14 @@ class Shipwright(object):
             docker.tags_from_containers(client, containers)  # list of tags
         ))
 
-        current_rel = map(
-            compose(
-                commits.last_commit_relative(self.source_control, commit_map),
-                fn.getattr('dir_path')
-            ),
-            containers
-        )
+        current_rel = [
+            commits.last_commit_relative(
+                self.source_control,
+                commit_map,
+                c.dir_path,
+            )
+            for c in containers
+        ]
 
         # [[Container], [Tag], [Int], [Int]] -> [Target]
         return [

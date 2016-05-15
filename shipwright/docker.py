@@ -1,6 +1,5 @@
 from __future__ import absolute_import
-from shipwright import fn
-from shipwright.fn import curry, compose, flatten
+from shipwright.fn import curry
 
 
 def key_from_image_name(image_name):
@@ -25,20 +24,13 @@ def key_from_image_info(image_info_dict):
 
 @curry
 def last_built_from_docker(client, name):
-    return compose(
-        list,
-        flatten,
-        fn.fmap(key_from_image_info)  # {.. 'RepoTags': [...]} -> [...]
-    )(client.images(name))
+    images = client.images(name)
+    return list([x for i in images for x in key_from_image_info(i)])
 
 
-# client -> [containers] -> [[DockerTag]]
 @curry
 def tags_from_containers(client, containers):
-    return map(
-        compose(last_built_from_docker(client), fn.getattr('name')),
-        containers
-    )
+    return [last_built_from_docker(client, c.name) for c in containers]
 
 
 def encode_tag(tag):
